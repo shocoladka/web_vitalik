@@ -1,27 +1,47 @@
 <html>
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="stylesheet" href="todo.css">
+  <head>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="todo.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="todo.js"></script>
+  </head>
 
-  <div class="raw">
-    <div class="col-md-4 col-md-offset-4">
-      <div class="panel panel-default">
-        <div class="panel-body">
-          <h1 align="center">Todos</h1>
-          <div class="col-lg-12">
-            <input type="text" class="form-control" placeholder="Please enter some shit">
+  <body>
+    <div class="raw">
+      <div class="col-md-4 col-md-offset-4">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h1 align="center">Todos</h1>
+            <form id="todo-form">
+              <div class="input-group col-md-10 col-md-offset-1">
+                <input id="todo-input" type="text" class="form-control" 
+                    placeholder="Please enter some shit">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="submit">Add</button>
+                </span>
+              </div>
+            </form>
+
+            <div class="col-md-10 col-md-offset-1">
+              <input id="mark-all" type="checkbox" style="margin-left: 15;">
+              <span>Mark all</span>
+              <ul class="list-group myul" id="todo-list">
+                <li class="list-group-item myli">
+                  <input type="checkbox" name="checkbox">
+                  <span>First thing to do</span>
+                  <button type="button" class="close"><span aria-hidden="true">&times;</span>
+                </li>
+              </ul>
+            </div>
           </div>
 
-          <div class="col-lg-12">
-            <ul class="list-group myul">
-              <li class="list-group-item myli">lol1</li>
-              <li class="list-group-item myli">lol2</li>
-              <li class="list-group-item myli">lol3</li>
-            </ul>
+          <div class="panel-footer">
+            <span id="items-left"></span>
+            <button class="btn btn-default btn-xs" style='float:right;' id="done">Done</button>
           </div>
+          <script>items_left();</script>
         </div>
-
-        <div class="panel-footer">0 items left</div>
       </div>
     </div>
-  </div>
+  </body>
 </html>
