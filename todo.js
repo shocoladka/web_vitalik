@@ -1,12 +1,13 @@
 $(document).ready(function() {
+  var elems = JSON.parse(localStorage.getItem("ThingsToDo"));
+  for (i in elems)
+    addThing(elems[i]);
+
   $("#todo-form").submit(function(e) {
     if($("#todo-input").val().length > 0) {
-      $("#todo-list").append($('<li class="list-group-item myli">').append(
-          $('<input type="checkbox" name="checkbox">')).append(
-            "\n<span>" + $("#todo-input").val() + "</span>").append(
-              '<button type="button" class="close"><span aria-hidden="true">&times;</span>'));
+      addThing($("#todo-input").val());
       $("#todo-input").val("");
-      items_left();
+      update();
     }
     e.preventDefault();
   });
@@ -15,7 +16,7 @@ $(document).ready(function() {
     $('input[name="checkbox"]:checked').each(function(i) {
       $(this).parent().remove();
     });
-    items_left();
+    update();
   });
 
   $('#mark-all').change(function() {
@@ -24,21 +25,41 @@ $(document).ready(function() {
       $(this).prop('checked', t);
       strike(this);
     });
-    items_left();
+    update();
   })
+  update();
 });
 
 $(document).on('change', 'input[name="checkbox"]', function() {
   strike(this);
-  items_left();
+  update();
 });
 
 $(document).on('click', 'button[class="close"]', function() {
   $(this).parent().remove();
-  items_left();
+  update();
 });
 
-function items_left() {
+$(document).on('dblclick', 'span[name="text"]', function() {
+  $(this).replaceWith($('<input name="text">').val(this.innerHTML));
+  $('input[name="text"]').focus();
+  $('input[name="text"]').on('blur', function() {
+    if($(this).val().length == 0)
+      $(this).parent().remove();
+    $(this).replaceWith($('<span name="text">').html($(this).val()));
+    update();
+  });
+  $('input[name="text"]').on('keypress', function(e) {
+    if (e.which == 13) {
+      if($(this).val().length == 0)
+        $(this).parent().remove();
+      $(this).replaceWith($('<span name="text">').html($(this).val()));
+      update();
+    }
+  });
+});
+
+function update() {
   if($('input[name="checkbox"]:checked').length > 0)
     $('#done').show();
   else
@@ -50,6 +71,13 @@ function items_left() {
   else
     $('#mark-all').prop('checked', false);
   $("#items-left").text(left + ' items left');
+
+  var elems = $('span[name="text"]').toArray();
+  for (i in elems)
+    elems[i] = elems[i].innerHTML
+  
+  localStorage.setItem("ThingsToDo", JSON.stringify(elems));
+
   $("#todo-input").focus();
 }
 
@@ -58,4 +86,11 @@ function strike(e) {
     $(e).siblings('strike').children().unwrap();
   else
     $(e).siblings('span').wrap("<strike>");
+}
+
+function addThing(e) {
+  $("#todo-list").append($('<li class="list-group-item myli">').append(
+    $('<input type="checkbox" name="checkbox">')).append(
+      '\n<span name="text">' + e + "</span>").append(
+        '<button type="button" class="close"><span aria-hidden="true">&times;</span>'));
 }
